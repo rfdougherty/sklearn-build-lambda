@@ -1,2 +1,4 @@
 pandas==0.22.0
+git+https://github.com/jsonpickle/jsonpickle.git@master#egg=jsonpickle
+dill==0.2.7.1
 

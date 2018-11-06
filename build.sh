@@ -12,14 +12,17 @@ yum install -y \
     python36-devel \
     python36-virtualenv \
     findutils \
-    zip
+    zip \
+    git
 
 do_pip () {
     pip install --upgrade pip wheel
     pip install --no-binary numpy numpy
     pip install --no-binary scipy scipy
-    #pip install sklearn
+    pip install sklearn
     test -f /outputs/requirements.txt && pip install -r /outputs/requirements.txt
+    # Remove unit tests
+    rm -rf */tests/
 }
 
 strip_virtualenv () {
