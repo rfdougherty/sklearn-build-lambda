@@ -17,9 +17,8 @@ To build the zipfile, pull the Amazon Linux image and run the build script in
 it.
 
 ```
-$ docker pull amazonlinux:2016.09
-$ docker run -v $(pwd):/outputs -it amazonlinux:2016.09 \
-      /bin/bash /outputs/build.sh
+$ docker pull amazonlinux:2017.03
+$ docker run -v $(pwd):/outputs -it amazonlinux:2017.03 /bin/bash /outputs/build.sh
 ```
 
 That will make a file called `venv.zip` in the local directory that's around
