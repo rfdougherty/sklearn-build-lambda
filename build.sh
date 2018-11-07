@@ -19,32 +19,33 @@ do_pip () {
     pip install --upgrade pip wheel
     pip install --no-binary numpy numpy
     pip install --no-binary scipy scipy
+    pip install --no-binary statsmodels statsmodels
     pip install sklearn
     test -f /outputs/requirements.txt && pip install -r /outputs/requirements.txt
-    # Remove unit tests
-    rm -rf */tests/
 }
 
 strip_virtualenv () {
     echo "venv original size $(du -sh $VIRTUAL_ENV | cut -f1)"
     find $VIRTUAL_ENV/lib64/python3.6/site-packages/ -name "*.so" | xargs strip
+    # Remove unit tests
+    find $VIRTUAL_ENV/lib64/python3.6/site-packages/ -type d -name tests -prune -exec rm -rf {} \;
     echo "venv stripped size $(du -sh $VIRTUAL_ENV | cut -f1)"
 
-    pushd $VIRTUAL_ENV/lib/python3.6/site-packages/ && zip --symlinks -r -9 -q /tmp/partial-venv.zip * ; popd
-    pushd $VIRTUAL_ENV/lib64/python3.6/site-packages/ && zip --symlinks -r -9 --out /outputs/venv.zip -q /tmp/partial-venv.zip * ; popd
+    pushd $VIRTUAL_ENV/lib/python3.6/site-packages/ && zip -yrq9 /tmp/partial-venv.zip * ; popd
+    pushd $VIRTUAL_ENV/lib64/python3.6/site-packages/ && zip -yr9 --out /outputs/venv.zip -q /tmp/partial-venv.zip * ; popd
     echo "site-packages compressed size $(du -sh /outputs/venv.zip | cut -f1)"
 
-    pushd $VIRTUAL_ENV && zip --symlinks -r -q /outputs/full-venv.zip * ; popd
+    pushd $VIRTUAL_ENV && zip -yrq9 /outputs/full-venv.zip * ; popd
     echo "venv compressed size $(du -sh /outputs/full-venv.zip | cut -f1)"
 }
 
 shared_libs () {
     libdir="$VIRTUAL_ENV/lib64/python3.6/site-packages/lib/"
-    mkdir -p $VIRTUAL_ENV/lib64/python3.6/site-packages/lib || true
-    cp --preserve=links /usr/lib64/atlas/*.so* $libdir
-    cp --preserve=links /usr/lib64/libopenblas.so.0 $libdir
-    cp --preserve=links /usr/lib64/libquadmath.so.0 $libdir
-    cp --preserve=links /usr/lib64/libgfortran.so.3 $libdir
+    mkdir -p $libdir || true
+    cp -d /usr/lib64/atlas/*.so* $libdir
+    cp /usr/lib64/libopenblas.so.0 $libdir
+    cp /usr/lib64/libquadmath.so.0 $libdir
+    cp /usr/lib64/libgfortran.so.3 $libdir
 }
 
 main () {
