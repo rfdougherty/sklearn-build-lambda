@@ -33,16 +33,17 @@ would thus look like:
 import os
 import ctypes
 
-for d, _, files in os.walk('lib'):
-    for f in files:
-        if f.endswith('.a'):
-            continue
-        ctypes.cdll.LoadLibrary(os.path.join(d, f))
+libs = ['libatlas.so.3', 'libptcblas.so', 'libquadmath.so.0', 'libgfortran.so.3', 'libf77blas.so.3', 
+        'libptf77blas.so.3.0', 'libcblas.so.3', 'liblapack.so.3', 'libopenblas.so.0']
 
-import sklearn
+for f in libs:
+    ctypes.cdll.LoadLibrary(os.path.join('lib64', f))
+
+# Do your imports here
+import pandas as pd
 
 def handler(event, context):
-    # do sklearn stuff here
+    # do pandas/sklearn/scipy/numpy stuff here
     return {'yay': 'done'}
 
 ```
